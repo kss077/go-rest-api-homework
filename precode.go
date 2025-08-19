@@ -60,10 +60,12 @@ func postTasks(w http.ResponseWriter, r *http.Request) {
 	_, err := buf.ReadFrom(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	if err := json.Unmarshal(buf.Bytes(), &task); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	tasks[task.ID] = task
@@ -78,6 +80,7 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 	tasks, ok := tasks[id]
 	if !ok {
 		http.Error(w, "Задача не найдена", http.StatusNoContent)
+		return
 	}
 
 	response, err := json.Marshal(tasks)
@@ -96,6 +99,7 @@ func deleteTasks(w http.ResponseWriter, r *http.Request) {
 	_, ok := tasks[id]
 	if !ok {
 		http.Error(w, "по этому запросу никого нет", http.StatusBadRequest)
+		return
 	}
 	delete(tasks, id)
 
